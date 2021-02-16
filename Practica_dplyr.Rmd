@@ -1,0 +1,120 @@
+---
+title: "practica_dplyr"
+author: "Sandra Rairán"
+date: "2/16/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+## Usando el conjunto de datos starwars mediante la libreria dplyr
+
+```{r dplyr,message = FALSE,warning=FALSE}
+library(dplyr)
+```
+
+### select
+
+
+```{r select1, echo=TRUE}
+starwars %>% 
+  select(name, ends_with("color"))
+```
+
+```{r select2, echo=FALSE}
+starwars %>% 
+  select(name:mass)
+```
+
+### filter
+
+
+```{r filter, echo=TRUE}
+starwars %>% 
+  filter(species == "Droid")
+```
+
+### arrange
+
+
+```{r arrange, echo=TRUE}
+starwars %>% 
+  arrange(desc(birth_year))
+```
+
+
+### mutate (crear columnas)
+
+```{r mutate, echo=TRUE}
+starwars <-starwars %>% mutate(height_m = height / 100) 
+colnames(starwars)
+```
+  
+### group_by y summarise
+
+```{r group_by, echo=TRUE}
+starwars %>%
+  group_by(species) %>%
+  summarise(
+    n = n(),
+    mass = mean(mass, na.rm = TRUE)
+  ) %>%
+    arrange(desc(n))
+
+```
+
+
+### Contar el numero de valores persidos
+
+```{r na, echo=TRUE}
+
+  sum(is.na(starwars$mass))
+```
+
+### slice_max (seleccione filas con los valores más altos)
+
+```{r slice_max, echo=TRUE}
+
+  starwars %>% slice_max(height, n = 5)
+```
+
+### across (agrupa por genero y calcula el promedio de todas las columnas numericas)
+
+```{r across_max, echo=TRUE}
+
+  starwars %>% 
+  group_by(gender) %>% 
+  filter(n() > 1) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
+
+
+```
+
+### distinct y across 
+
+```{r distinct, echo=TRUE}
+
+  distinct(starwars, across(contains("color")))
+
+
+
+```
+
+
+### pull extraer variables
+
+```{r pull, echo=TRUE}
+
+  pull(starwars, name, birth_year)
+
+
+
+```
+
+
+
+
+
+
+
